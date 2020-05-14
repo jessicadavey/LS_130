@@ -111,4 +111,40 @@ class TodoList
   def to_a
     @todos.clone
   end
+
+  def each
+    @todos.each do |todo|
+      yield(todo)
+    end
+
+    self
+  end
+
+  def select
+    results = TodoList.new("Copy of " + title)
+    each do |todo|
+      results << todo if yield(todo)
+    end
+    results
+  end
 end
+
+todo1 = Todo.new("Buy milk")
+todo2 = Todo.new("Clean room")
+todo3 = Todo.new("Go to gym")
+
+list = TodoList.new("Today's Todos")
+list.add(todo1)
+list.add(todo2)
+list.add(todo3)
+
+todo1.done!
+
+results = list.select { |todo| todo.done? }    # you need to implement this method
+
+puts results.inspect
+
+
+results2 = list.each { |todo| puts todo }
+
+puts results2.inspect
