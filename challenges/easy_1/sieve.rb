@@ -1,3 +1,5 @@
+require 'pry'
+
 =begin
 
   input: integer, n
@@ -35,16 +37,19 @@ class Sieve
   end
 
   def primes
-    counter = 2
-    if @range[counter] == true
-      current_value = counter
+    number_to_test = 1
       loop do
-        counter += current_value
-        break if counter > @limit
-        @range[counter] = false
+        number_to_test += 1
+        break if number_to_test > Math.sqrt(@limit)
+        next unless @range[number_to_test] == true
+        current_value = step = number_to_test
+        loop do
+          current_value += step
+          break if current_value > @limit
+          @range[current_value] = false
+        end
       end
-    end
-    @range
+    @range.select { |_, unmarked| unmarked }.keys
   end
 end
 
