@@ -1,6 +1,6 @@
 class SumOfMultiples
   def initialize(*numbers)
-    @divisors = valid_input?(numbers) ? numbers : [3, 5]
+    @divisors = valid_divisors?(numbers) ? numbers : [3, 5]
   end
 
   def to(limit)
@@ -8,6 +8,7 @@ class SumOfMultiples
   end
 
   def self.to(limit, divisors=[3, 5])
+    raise TypeError, "Must enter a positive integer" unless positive_integer?(limit)
     range = (1...limit).to_a
     range.select { |num| multiple?(num, divisors) }
          .sum
@@ -20,10 +21,14 @@ class SumOfMultiples
     false
   end
 
+  def self.positive_integer?(num)
+    num.instance_of?(Integer) && num > 0
+  end
+
   private
 
-  def valid_input?(numbers)
-    numbers.all? { |num| num.instance_of?(Integer) && num > 0 } &&
+  def valid_divisors?(numbers)
+    numbers.all? { |num|  self.class.positive_integer?(num)} &&
       !numbers.empty?
   end
 end
