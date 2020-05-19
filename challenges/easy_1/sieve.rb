@@ -25,8 +25,6 @@ require 'pry'
 
 =end
 
-
-
 class Sieve
   def initialize(limit)
     @limit = limit
@@ -38,21 +36,23 @@ class Sieve
 
   def primes
     number_to_test = 1
-      loop do
-        number_to_test += 1
-        break if number_to_test > Math.sqrt(@limit)
-        next unless @range[number_to_test] == true
-        current_value = step = number_to_test
-        loop do
-          current_value += step
-          break if current_value > @limit
-          @range[current_value] = false
-        end
-      end
+    loop do
+      number_to_test += 1
+      break if number_to_test > Math.sqrt(@limit)
+      next unless @range[number_to_test]
+      mark_multiples(number_to_test)
+    end
     @range.select { |_, unmarked| unmarked }.keys
   end
+
+  private
+
+  def mark_multiples(num)
+    step = num
+    loop do
+      num += step
+      break if num > @limit
+      @range[num] = false
+    end
+  end
 end
-
-sieve = Sieve.new(10)
-p sieve.primes
-
