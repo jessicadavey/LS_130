@@ -1,23 +1,25 @@
 class SecretHandshake
-  COMMANDS = ['wink', 'double blink', 'close your eyes', 'jump']
+  REVERSE_COMMANDS = ['jump', 'close your eyes', 'double blink', 'wink']
 
-  def binary_string?(input)
-    input.instance_of?(String) && input.match?(/[\A[01]+\z]/)
-  end
-
-  def initialize(number)
-    @command_string = binary_string?(number) ? number : number.to_i.to_s(2)
+  def initialize(input)
+    @commands =
+      if input.instance_of?(String) && input.match?(/[\A[01]+\z]/)
+        input
+      else
+        input.to_i.to_s(2)
+      end
   end
 
   def commands
-    @command_string.reverse!
-
     handshake = []
-    [@command_string.size, COMMANDS.size].min.times do |index|
-      handshake << COMMANDS[index] if @command_string[index] == '1'
+    -1.downto(-@commands.size) do |index|
+      if index == -5
+        handshake.reverse!
+        break
+      end
+      handshake << REVERSE_COMMANDS[index] if @commands[index] == '1'
     end
-
-    @command_string.size >= 5 ? handshake.reverse : handshake
+    handshake
   end
 end
 
@@ -30,9 +32,7 @@ handshake commands:
 
 10000 = Reverse the order of the operations in the secret handshake.
 
-
-
-Algorithm
+Original Algorithm (refactored later)
 1. get a decimal number
 2. convert it to a binary string
   if string.size >= 4
